@@ -53,6 +53,17 @@ UserSchema.methods.generateAuthToken = function () {
 	});
 };
 
+UserSchema.methods.removeToken = function (token) {
+	var user = this;
+	return user.update({
+		$pull: {
+			tokens: {
+				token: token
+			}
+		}
+	});
+};
+
 // new static method
 UserSchema.statics.findByToken = function(token) {
 	var User = this;
@@ -89,6 +100,7 @@ UserSchema.statics.findByCredentials = function(email, password) {
 	});
 };
 
+// middleware called prior to save()
 UserSchema.pre('save', function (next) {
 	var user = this;
 	if (user.isModified('password')) {
